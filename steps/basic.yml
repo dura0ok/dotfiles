@@ -1,0 +1,2 @@
+- shell:
+    - echo "🎉 Hello from Dotbot!"
