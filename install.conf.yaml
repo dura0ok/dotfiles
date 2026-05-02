@@ -18,6 +18,7 @@
         - btop
         - htop
         - lazygit
+        - { dnf: fd, apt: fd-find }
 
 - omnipkg:
     - install:
