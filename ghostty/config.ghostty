@@ -1,0 +1,4 @@
+theme = dark:catppuccin-frappe.conf,light:catppuccin-latte.conf
+
+keybind = alt+shift+==increase_font_size:1
+keybind = alt+shift+-=decrease_font_size:1

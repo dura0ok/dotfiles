@@ -1,0 +1,102 @@
+- defaults:
+    link:
+      relink: true
+    shell:
+      stdout: true
+      stderr: true
+
+- omnipkg:
+    - install:
+        - zsh
+        - git
+        - curl
+        - wget
+        - ca-certificates
+        - direnv
+        - fzf
+        - tmux
+        - btop
+        - htop
+        - lazygit
+
+- omnipkg:
+    - install:
+        - cargo
+        - { dnf: openssl-devel, apt: libssl-dev }
+        - { dnf: lz4-devel, apt: liblz4-dev }
+        - { dnf: libzstd-devel, apt: libzstd-dev }
+        - { dnf: libicu-devel, apt: libicu-dev }
+        - { dnf: readline-devel, apt: libreadline-dev }
+        - { dnf: zlib-devel, apt: zlib1g-dev }
+        - { dnf: pkgconf-pkg-config, apt: pkg-config }
+        - { dnf: leveldb-devel, apt: libleveldb-dev }
+        - fuse3
+        - { dnf: fuse3-devel, apt: libfuse3-dev }
+        - make
+        - flex
+        - bison
+        - meson
+        - cmake
+        - { dnf: gcc-c++, apt: g++ }
+        - perl
+        - { dnf: perl-Test-Harness, apt: libtest-harness-perl }
+        - { dnf: perl-devel, apt: libperl-dev }
+        - { dnf: boost-devel, apt: libboost-all-dev }
+        - { dnf: boost-static }
+
+- omnipkg:
+    - install:
+        - gdb
+        - python3-pygments
+        - [fira-code-fonts, fonts-firacode]
+
+- link:
+    ~/.zshrc: zsh/zshrc
+    ~/.gdbinit: gdb/.gdbinit
+    ~/.config/Code/User/settings.json:
+      path: vscode/settings.json
+      create: true
+      backup: true
+    ~/.config/Code/User/keybindings.json:
+      path: vscode/keybindings.json
+      create: true
+      backup: true
+    ~/.config/Cursor/User/settings.json:
+      path: vscode/settings.json
+      create: true
+      backup: true
+    ~/.config/Cursor/User/keybindings.json:
+      path: vscode/keybindings.json
+      create: true
+      backup: true
+    ~/.config/ghostty/config.ghostty:
+      path: ghostty/config.ghostty
+      create: true
+      backup: true
+    ~/.config/ghostty/themes/catppuccin-latte.conf:
+      path: ghostty/catppuccin/themes/catppuccin-latte.conf
+      create: true
+      backup: true
+    ~/.config/ghostty/themes/catppuccin-frappe.conf:
+      path: ghostty/catppuccin/themes/catppuccin-frappe.conf
+      create: true
+      backup: true
+    ~/.config/tmux/tmux.conf:
+      path: tmux/gpakosz/.tmux.conf
+      create: true
+      backup: true
+    ~/.config/tmux/tmux.conf.local:
+      path: tmux/gpakosz/.tmux.conf.local
+      create: true
+      backup: true
+
+- shell:
+    - command: bash scripts/install-ghostty.sh
+    - command: bash scripts/install-sublime-text.sh
+    - command: bash scripts/install-nvm.sh
+    - command: bash scripts/install-go.sh
+    - command: bash scripts/install-worktrunk.sh
+    - command: bash scripts/install-vscode.sh
+    - command: bash scripts/install-vscode-extensions.sh
+    - command: bash scripts/install-docker.sh
+    - command: bash scripts/chsh-zsh-if-needed.sh

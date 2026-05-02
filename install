@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -e
+
+CONFIG="install.conf.yaml"
+DOTBOT_DIR="dotbot"
+DOTBOT_BIN="bin/dotbot"
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+DOTBOT_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --skip-apps) export DOTFILES_SKIP_APPS=1 ;;
+    -h|--help)
+      echo "Usage: $0 [options] [dotbot args…]"
+      echo
+      echo "Options (this script):"
+      echo "  --skip-apps    skip Ghostty, Sublime Text, VS Code installers"
+      echo
+      echo "Anything else is passed to dotbot (e.g. -v, -vv, -n, --only link)."
+      exit 0
+      ;;
+    *) DOTBOT_ARGS+=("$1") ;;
+  esac
+  shift
+done
+
+cd "${BASEDIR}"
+# All paths from .gitmodules (dotbot, plugins, ghostty/catppuccin, tmux/gpakosz, …)
+git submodule sync --recursive
+if git submodule update --help 2>&1 | grep -q -- '--jobs'; then
+  git submodule update --init --recursive --progress --jobs "${DOTFILES_SUBMODULE_JOBS:-8}"
+else
+  git submodule update --init --recursive --progress
+fi
+
+OMNIPKG_PLUGIN="${BASEDIR}/dotbot-plugins/dotbot-omnipkg/omnipkg.py"
+exec "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" -p "${OMNIPKG_PLUGIN}" "${DOTBOT_ARGS[@]}"
