@@ -19,6 +19,7 @@
         - htop
         - lazygit
         - { dnf: fd, apt: fd-find }
+        - { dnf: duf, apt: duf }
 
 - omnipkg:
     - install:
