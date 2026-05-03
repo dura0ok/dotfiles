@@ -25,6 +25,9 @@
     - install:
         - cargo
         - { dnf: openssl-devel, apt: libssl-dev }
+        - { dnf: libcurl-devel, apt: libcurl4-openssl-dev }
+        - { dnf: libpq-devel, apt: libpq-dev }
+        - { dnf: libssh-devel, apt: libssh-dev }
         - { dnf: lz4-devel, apt: liblz4-dev }
         - { dnf: libzstd-devel, apt: libzstd-dev }
         - { dnf: libicu-devel, apt: libicu-dev }
@@ -39,6 +42,7 @@
         - bison
         - meson
         - cmake
+        - { dnf: CUnit-devel, apt: libcunit1-dev }
         - { dnf: gcc-c++, apt: g++ }
         - perl
         - { dnf: perl-Test-Harness, apt: libtest-harness-perl }
