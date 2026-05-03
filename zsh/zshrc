@@ -35,6 +35,11 @@ zinit snippet OMZL::prompt_info_functions.zsh
 zinit snippet OMZL::theme-and-appearance.zsh
 
 autoload -Uz compinit && compinit -C
+
+zmodload -i zsh/complist 2>/dev/null
+zstyle ':completion:*' menu select=2
+[[ -n ${LS_COLORS} ]] && zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
 zinit cdreplay -q
 
 zinit snippet OMZP::git
