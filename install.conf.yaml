@@ -88,18 +88,24 @@
       create: true
       backup: true
     ~/.config/tmux/tmux.conf:
-      path: tmux/gpakosz/.tmux.conf
+      path: tmux/tmux.conf
+      create: true
+      backup: true
+    ~/.tmux.conf:
+      path: tmux/tmux.conf
       create: true
       backup: true
     ~/.config/tmux/tmux.conf.local:
-      path: tmux/gpakosz/.tmux.conf.local
+      path: tmux/tmux.conf.local
       create: true
       backup: true
 
 - shell:
+    - command: bash scripts/install-tmux-tpm.sh
     - command: bash scripts/install-ghostty.sh
     - command: bash scripts/install-sublime-text.sh
     - command: bash scripts/install-nvm.sh
+    - command: bash scripts/install-mise.sh
     - command: bash scripts/install-go.sh
     - command: bash scripts/install-worktrunk.sh
     - command: bash scripts/install-vscode.sh

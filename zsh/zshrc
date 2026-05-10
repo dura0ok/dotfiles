@@ -43,6 +43,8 @@ zstyle ':completion:*' menu select=2
 zinit cdreplay -q
 
 zinit snippet OMZP::git
+
+export ZSH_TMUX_FIXTERM=false
 zinit snippet OMZP::tmux
 zinit snippet OMZ::themes/muse.zsh-theme
 
@@ -245,3 +247,10 @@ export PATH=$HOME/.cargo/bin:$PATH
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+
+export GOROOT=/home/snppg/.go
+export GOPATH=/home/snppg/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin

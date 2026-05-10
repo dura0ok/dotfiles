@@ -155,8 +155,7 @@
   "window.clickThroughInactive": false,
   "window.newWindowDimensions": "maximized",
   "workbench.editor.labelFormat": "medium",
-  "workbench.startupEditor": "newUntitledFile",
-  "workbench.statusBar.visible": false,
+"workbench.startupEditor": "newUntitledFile",
   "workbench.tips.enabled": false,
   "workbench.tree.renderIndentGuides": "none",
   "workbench.tree.enableStickyScroll": false,
@@ -180,7 +179,7 @@
   "git.autorefresh": true,
   "git.decorations.enabled": true,
   "git.openRepositoryInParentFolders": "never",
-  "git.blame.editorDecoration.enabled": false,
+  "git.blame.editorDecoration.enabled": true,
 
   "python.analysis.completeFunctionParens": false,
   "python.createEnvironment.trigger": "off",
@@ -248,5 +247,8 @@
       "visibility": "hidden !important",
       "display": "none !important",
     },
-  },
+},
+"git.blame.statusBarItem.enabled": false,
+"window.autoDetectColorScheme": false,
+"workbench.statusBar.visible": false,
 }
