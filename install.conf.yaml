@@ -16,6 +16,7 @@
         - fzf
         - bat
         - tmux
+        - { dnf: python3-tmuxp, apt: tmuxp }
         - btop
         - htop
         - lazygit
@@ -55,6 +56,8 @@
     - install:
         - gdb
         - python3-pygments
+        - python3-pip
+        - pipx
         - [fira-code-fonts, fonts-firacode]
 
 - link:
