@@ -31,6 +31,7 @@ clone_plugin_github() {
 
 clone_plugin_github "catppuccin/tmux" "v2.3.0"
 clone_plugin_github "tmux-plugins/tmux-resurrect"
+clone_plugin_github "omerxx/tmux-sessionx"
 
 resolve_tmux_conf() {
   local xdg="${XDG_CONFIG_HOME:-${HOME}/.config}/tmux/tmux.conf"
