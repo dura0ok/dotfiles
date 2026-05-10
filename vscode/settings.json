@@ -33,7 +33,7 @@
   "editor.formatOnPaste": false,
   "editor.wordWrap": "on",
   "editor.wordWrapColumn": 80,
-  "editor.hover.enabled": "off",
+  "editor.hover.enabled": "on",
   "editor.stickyScroll.enabled": false,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
@@ -180,6 +180,8 @@
   "git.decorations.enabled": true,
   "git.openRepositoryInParentFolders": "never",
   "git.blame.editorDecoration.enabled": true,
+  "git.blame.editorDecoration.disableHover": false,
+  "editor.hover.delay": 900,
 
   "python.analysis.completeFunctionParens": false,
   "python.createEnvironment.trigger": "off",
