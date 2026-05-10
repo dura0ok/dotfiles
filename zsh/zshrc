@@ -215,6 +215,16 @@ alias va='source .venv/bin/activate'
 alias gd-plain='git --no-pager diff'
 alias cdpwd='cd "$PWD"'
 export PATH=$HOME/.local/bin:$PATH
+
+gitd() {
+  command -v delta >/dev/null 2>&1 || { echo 'delta: not on PATH' >&2; return 1 }
+  if [[ $# -eq 0 ]]; then
+    command git -c core.pager=delta -c interactive.diffFilter='delta --color-only' diff
+  else
+    command git -c core.pager=delta -c interactive.diffFilter='delta --color-only' "$@"
+  fi
+}
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
