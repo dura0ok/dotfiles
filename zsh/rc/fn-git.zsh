@@ -19,9 +19,15 @@ fzf-git-status() {
 
 gitd() {
   command -v delta >/dev/null 2>&1 || { echo 'delta: not on PATH' >&2; return 1 }
+  local -a g=(command git -c core.pager=delta -c interactive.diffFilter='delta --color-only')
   if [[ $# -eq 0 ]]; then
-    command git -c core.pager=delta -c interactive.diffFilter='delta --color-only' diff
+    if command git diff --quiet && command git diff --cached --quiet; then
+      if [[ -n $(command git status --porcelain 2>/dev/null) ]]; then
+        print -ru2 '[gitd] no diff on tracked files (untracked ignored). Try: git status | delta'
+      fi
+    fi
+    "$g[@]" diff
   else
-    command git -c core.pager=delta -c interactive.diffFilter='delta --color-only' "$@"
+    "$g[@]" "$@"
   fi
 }
