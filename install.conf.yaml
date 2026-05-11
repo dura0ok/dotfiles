@@ -112,6 +112,7 @@
     - command: bash scripts/install-ghostty.sh
     - command: bash scripts/install-sublime-text.sh
     - command: bash scripts/install-nvm.sh
+    - command: bash scripts/install-branchlet.sh
     - command: bash scripts/install-delta.sh
     - command: bash scripts/install-go.sh
     - command: bash scripts/install-worktrunk.sh
