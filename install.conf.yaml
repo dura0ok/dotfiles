@@ -17,14 +17,23 @@
         - ripgrep
         - bat
         - tmux
+        - mosh
         - { dnf: python3-tmuxp, apt: tmuxp }
         - btop
         - htop
+        - { dnf: iotop-c, apt: iotop-c, pac: iotop-c }
         - lazygit
+        - { brew: lazydocker }
+        - coreutils
+        - { apt: unp, pac: unp, brew: unp }
+        - asciinema
+        - { dnf: task, apt: taskwarrior, pac: task, brew: task }
         - { dnf: fd, apt: fd-find }
         - { dnf: duf, apt: duf }
         - eza
         - tldr
+        - pv
+        - ipcalc
 
 - omnipkg:
     - install:
@@ -119,5 +128,7 @@
     - command: bash scripts/install-vscode.sh
     - command: bash scripts/install-vscode-extensions.sh
     - command: bash scripts/install-docker.sh
+    - command: bash scripts/install-lazydocker.sh
+    - command: bash scripts/install-unp-linux.sh
     - command: bash scripts/install-lnav.sh
     - command: bash scripts/chsh-zsh-if-needed.sh
