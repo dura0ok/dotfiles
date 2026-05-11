@@ -23,6 +23,8 @@
         - lazygit
         - { dnf: fd, apt: fd-find }
         - { dnf: duf, apt: duf }
+        - eza
+        - tldr
 
 - omnipkg:
     - install:
