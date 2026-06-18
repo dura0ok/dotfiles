@@ -2,7 +2,7 @@
   // Debug:
   "debug.allowBreakpointsEverywhere": true,
   "debug.javascript.codelens.npmScripts": "never",
-  "editor.glyphMargin": false,  // hide breakpoints
+  "editor.glyphMargin": true,  // hide breakpoints
   "debug.console.closeOnEnd": true,
 
   // Editor:
