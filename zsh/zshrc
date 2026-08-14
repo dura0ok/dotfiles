@@ -2,7 +2,7 @@ ZSH_CONFIG_DIR=${ZSH_CONFIG_DIR:-${${(%):-%x}:A:h}}
 _zshrc_parts=(
   env zinit history keys fzf
   fn-docker fn-git fn-fzf fn-media fn-misc
-  aliases path worktrees syntax
+  aliases aliases-work path worktrees syntax
 )
 for _part in $_zshrc_parts; do
   [[ -r "$ZSH_CONFIG_DIR/rc/$_part.zsh" ]] && source "$ZSH_CONFIG_DIR/rc/$_part.zsh"
