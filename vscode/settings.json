@@ -253,4 +253,5 @@
 "git.blame.statusBarItem.enabled": false,
 "window.autoDetectColorScheme": false,
 "workbench.statusBar.visible": false,
+"debug.breakpointsView.presentation": "tree",
 }
