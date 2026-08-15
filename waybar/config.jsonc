@@ -1,0 +1,119 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 8,
+  "modules-left": ["niri/workspaces", "niri/window"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "niri/language",
+    "pulseaudio",
+    "network",
+    "bluetooth",
+    "power-profiles-daemon",
+    "battery",
+    "tray",
+    "custom/power"
+  ],
+  "niri/language": {
+    "format": "{}",
+    "format-us": "EN",
+    "format-ru": "RU",
+    "on-click": "niri msg action switch-layout next",
+    "tooltip-format": "Layout: {long}"
+  },
+  "niri/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "active": "●",
+      "default": "○"
+    }
+  },
+  "niri/window": {
+    "format": "{}",
+    "max-length": 48,
+    "separate-outputs": true
+  },
+  "clock": {
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#7eb8da'><b>{}</b></span>",
+        "days": "<span color='#e8eaed'>{}</span>",
+        "weeks": "<span color='#8b919a'><b>W{}</b></span>",
+        "weekdays": "<span color='#e9c46a'><b>{}</b></span>",
+        "today": "<span color='#7eb8da'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click-right": "mode",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    },
+    "on-click": "gnome-calendar"
+  },
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " muted",
+    "format-icons": {
+      "default": ["", ""]
+    },
+    "on-click": "audio-settings",
+    "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && canberra-gtk-play -i audio-volume-change",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && canberra-gtk-play -i audio-volume-change",
+    "tooltip-format": "ЛКМ: выбор выхода (Speaker / BT)\nКолёсико: громкость"
+  },
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Питание: {profile}\nКлик — сменить режим",
+    "tooltip": true,
+    "format-icons": {
+      "default": "Bal",
+      "performance": "Perf",
+      "balanced": "Bal",
+      "power-saver": "Save"
+    }
+  },
+  "network": {
+    "format-wifi": "  {essid}",
+    "format-ethernet": "󰈀  wired",
+    "format-disconnected": "offline",
+    "tooltip-format": "{ifname}: {ipaddr}",
+    "on-click": "nm-connection-editor"
+  },
+  "bluetooth": {
+    "format": " {status}",
+    "format-connected": " {device_alias}",
+    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+    "format-off": " off",
+    "format-disabled": " —",
+    "format-no-controller": "",
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+    "on-click": "blueman-manager",
+    "on-click-right": "bluetoothctl power toggle"
+  },
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "states": {
+      "warning": 30,
+      "critical": 15
+    }
+  },
+  "tray": {
+    "spacing": 10
+  },
+  "custom/power": {
+    "format": "⏻",
+    "tooltip-format": "Session menu",
+    "on-click": "session-menu"
+  }
+}

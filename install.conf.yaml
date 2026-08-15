@@ -72,6 +72,28 @@
         - pipx
         - [fira-code-fonts, fonts-firacode]
 
+- omnipkg:
+    - install:
+        - { dnf: niri }
+        - { dnf: waybar }
+        - mako
+        - fuzzel
+        - swaybg
+        - swaylock
+        - grim
+        - slurp
+        - wl-clipboard
+        - { dnf: libcanberra-gtk3, apt: libcanberra-gtk3-module }
+        - playerctl
+        - brightnessctl
+        - jq
+        - flatpak
+        - { dnf: blueman }
+        - { dnf: nm-connection-editor }
+        - { dnf: gnome-calendar }
+        - { dnf: nautilus }
+        - { dnf: firefox }
+
 - link:
     ~/.zshrc: zsh/zshrc
     ~/.gdbinit: gdb/.gdbinit
@@ -115,6 +137,66 @@
       path: tmux/tmux.conf.local
       create: true
       backup: true
+    ~/.config/niri/config.kdl:
+      path: niri/config.kdl
+      create: true
+      backup: true
+    ~/.config/niri/input.kdl:
+      path: niri/input.kdl
+      create: true
+      backup: true
+    ~/.config/niri/outputs.kdl:
+      path: niri/outputs.kdl
+      create: true
+      backup: true
+    ~/.config/niri/layout.kdl:
+      path: niri/layout.kdl
+      create: true
+      backup: true
+    ~/.config/niri/startup.kdl:
+      path: niri/startup.kdl
+      create: true
+      backup: true
+    ~/.config/niri/window-rules.kdl:
+      path: niri/window-rules.kdl
+      create: true
+      backup: true
+    ~/.config/niri/binds.kdl:
+      path: niri/binds.kdl
+      create: true
+      backup: true
+    ~/.config/niri/ws-presets.kdl:
+      path: niri/ws-presets.kdl
+      create: true
+      backup: true
+    ~/.config/waybar/config.jsonc:
+      path: waybar/config.jsonc
+      create: true
+      backup: true
+    ~/.config/waybar/config:
+      path: waybar/config.jsonc
+      create: true
+      backup: true
+    ~/.config/waybar/style.css:
+      path: waybar/style.css
+      create: true
+      backup: true
+    ~/.config/mako/config:
+      path: mako/config
+      create: true
+      backup: true
+    ~/.local/bin/niri-ws-menu:
+      path: bin/niri-ws-menu
+      create: true
+      backup: true
+    ~/.local/bin/session-menu:
+      path: bin/session-menu
+      create: true
+      backup: true
+    ~/.local/bin/audio-settings:
+      path: bin/audio-settings
+      create: true
+      backup: true
 
 - shell:
     - command: bash scripts/install-tmux-tpm.sh
@@ -132,4 +214,5 @@
     - command: bash scripts/install-agg.sh
     - command: bash scripts/install-unp-linux.sh
     - command: bash scripts/install-lnav.sh
+    - command: bash scripts/install-niri-desktop.sh
     - command: bash scripts/chsh-zsh-if-needed.sh

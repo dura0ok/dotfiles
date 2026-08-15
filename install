@@ -14,7 +14,7 @@ while [[ $# -gt 0 ]]; do
       echo "Usage: $0 [options] [dotbot args…]"
       echo
       echo "Options (this script):"
-      echo "  --skip-apps    skip Ghostty, Sublime Text, VS Code installers"
+      echo "  --skip-apps    skip Ghostty, Sublime, VS Code, niri desktop helpers"
       echo
       echo "Anything else is passed to dotbot (e.g. -v, -vv, -n, --only link)."
       exit 0

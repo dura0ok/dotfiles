@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+app_id="com.saivert.pwvucontrol"
+cmd=(/usr/bin/flatpak run "$app_id" -t 4)
+
+id="$(
+  niri msg -j windows 2>/dev/null \
+    | python3 -c "
+import json,sys
+wins=json.load(sys.stdin)
+for w in wins:
+    if w.get('app_id')=='$app_id':
+        print(w['id']); break
+" 2>/dev/null || true
+)"
+
+if [[ -n "${id:-}" ]]; then
+  niri msg action focus-window --id "$id"
+else
+  exec "${cmd[@]}"
+fi
