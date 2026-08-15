@@ -93,6 +93,7 @@
         - { dnf: gnome-calendar }
         - { dnf: nautilus }
         - { dnf: firefox }
+        - { dnf: gnome-control-center }
 
 - link:
     ~/.zshrc: zsh/zshrc
@@ -185,8 +186,24 @@
       path: mako/config
       create: true
       backup: true
+    ~/.config/fuzzel/fuzzel.ini:
+      path: fuzzel/fuzzel.ini
+      create: true
+      backup: true
+    ~/.local/bin/niri-focus:
+      path: bin/niri-focus
+      create: true
+      backup: true
+    ~/.local/bin/gnome-settings:
+      path: bin/gnome-settings
+      create: true
+      backup: true
     ~/.local/bin/niri-ws-menu:
       path: bin/niri-ws-menu
+      create: true
+      backup: true
+    ~/.local/bin/niri-wallpaper:
+      path: bin/niri-wallpaper
       create: true
       backup: true
     ~/.local/bin/session-menu:
@@ -195,6 +212,14 @@
       backup: true
     ~/.local/bin/audio-settings:
       path: bin/audio-settings
+      create: true
+      backup: true
+    ~/.local/bin/power-profile-menu:
+      path: bin/power-profile-menu
+      create: true
+      backup: true
+    ~/.local/share/applications/org.gnome.Settings.desktop:
+      path: applications/org.gnome.Settings.desktop
       create: true
       backup: true
 

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+[[ -n ${NIRI_SOCKET:-} ]] || exit 1
+
+id=$(
+  niri msg -j windows \
+    | jq -r --arg app_id "$1" 'first(.[] | select(.app_id == $app_id) | .id)'
+)
+
+[[ -n $id && $id != null ]] || exit 1
+exec niri msg action focus-window --id "$id"

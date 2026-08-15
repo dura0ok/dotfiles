@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+niri-focus org.gnome.Settings 2>/dev/null || true
+
+if [[ ${XDG_CURRENT_DESKTOP,,} == *cinnamon* ]]; then
+  exec cinnamon-settings "$@"
+fi
+
+export XDG_CURRENT_DESKTOP=GNOME
+exec gnome-control-center "$@"

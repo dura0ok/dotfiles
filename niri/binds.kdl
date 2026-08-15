@@ -12,7 +12,7 @@ binds {
     }
 
     Super+N hotkey-overlay-title="Workspaces: presets / named" {
-        spawn-sh "$HOME/.local/bin/niri-ws-menu"
+        spawn "niri-ws-menu"
     }
 
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }

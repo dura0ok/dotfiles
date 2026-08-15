@@ -1,4 +1,8 @@
-spawn-at-startup "swaybg" "-m" "fill" "-i" "/usr/share/backgrounds/fedora-workstation/glasscurtains_dark.webp"
+environment {
+    PATH "/home/snppg/.local/bin:/usr/local/bin:/usr/bin"
+}
+
+spawn-at-startup "niri-wallpaper"
 spawn-at-startup "waybar"
 spawn-at-startup "mako"
 

@@ -10,7 +10,6 @@
     "pulseaudio",
     "network",
     "bluetooth",
-    "power-profiles-daemon",
     "battery",
     "tray",
     "custom/power"
@@ -67,17 +66,6 @@
     "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && canberra-gtk-play -i audio-volume-change",
     "tooltip-format": "ЛКМ: выбор выхода (Speaker / BT)\nКолёсико: громкость"
   },
-  "power-profiles-daemon": {
-    "format": "{icon}",
-    "tooltip-format": "Питание: {profile}\nКлик — сменить режим",
-    "tooltip": true,
-    "format-icons": {
-      "default": "Bal",
-      "performance": "Perf",
-      "balanced": "Bal",
-      "power-saver": "Save"
-    }
-  },
   "network": {
     "format-wifi": "  {essid}",
     "format-ethernet": "󰈀  wired",
@@ -106,7 +94,10 @@
     "states": {
       "warning": 30,
       "critical": 15
-    }
+    },
+    "tooltip-format": "{capacity}%\nКлик: режим питания (Save / Bal / Perf)",
+    "on-click": "power-profile-menu",
+    "on-click-right": "power-profile-menu"
   },
   "tray": {
     "spacing": 10

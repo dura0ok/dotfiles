@@ -1,0 +1,131 @@
+#!/usr/bin/env python3
+
+import os
+import select
+import signal
+import subprocess
+import sys
+import time
+import urllib.parse
+
+SWAYBG_MODES = {
+    "wallpaper": "tile",
+    "centered": "center",
+    "none": "center",
+    "scaled": "fit",
+    "stretched": "stretch",
+}
+
+swaybg_pid: int | None = None
+
+
+def gsettings_get(*keys: str) -> str:
+    try:
+        raw = subprocess.check_output(["gsettings", "get", *keys], text=True)
+    except subprocess.CalledProcessError:
+        return ""
+    return raw.strip().strip("'")
+
+
+def path_from_uri(value: str) -> str:
+    value = value.strip().strip("'")
+    if value.startswith("file://"):
+        value = value.removeprefix("file://")
+    return urllib.parse.unquote(value)
+
+
+def wallpaper_path() -> str:
+    scheme = gsettings_get("org.gnome.desktop.interface", "color-scheme")
+    light = gsettings_get("org.gnome.desktop.background", "picture-uri")
+    dark = gsettings_get("org.gnome.desktop.background", "picture-uri-dark")
+
+    if not light and not dark:
+        light = dark = gsettings_get("org.cinnamon.desktop.background", "picture-uri")
+
+    preferred = dark if "prefer-dark" in scheme else light
+    path = path_from_uri(preferred or light)
+    if os.path.isfile(path):
+        return path
+    return path_from_uri(light)
+
+
+def swaybg_mode() -> str:
+    option = (
+        gsettings_get("org.gnome.desktop.background", "picture-options")
+        or gsettings_get("org.cinnamon.desktop.background", "picture-options")
+    )
+    return SWAYBG_MODES.get(option, "fill")
+
+
+def apply_wallpaper() -> bool:
+    global swaybg_pid
+
+    image = wallpaper_path()
+    if not os.path.isfile(image):
+        print("niri-wallpaper: no image", file=sys.stderr)
+        return False
+
+    subprocess.run(["pkill", "-x", "swaybg"], capture_output=True)
+    time.sleep(0.05)
+    swaybg_pid = subprocess.Popen(
+        ["swaybg", "-m", swaybg_mode(), "-i", image]
+    ).pid
+    return True
+
+
+def watch() -> None:
+    def stop(*_args) -> None:
+        if swaybg_pid is not None:
+            try:
+                os.kill(swaybg_pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+        sys.exit(0)
+
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+    apply_wallpaper()
+
+    monitors = []
+    for args in (
+        ("org.gnome.desktop.background",),
+        ("org.gnome.desktop.interface", "color-scheme"),
+        ("org.cinnamon.desktop.background",),
+    ):
+        proc = subprocess.Popen(
+            ["gsettings", "monitor", *args],
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+        if proc.stdout is not None:
+            monitors.append(proc)
+
+    while True:
+        ready, _, _ = select.select([p.stdout for p in monitors], [], [])
+        for stream in ready:
+            stream.readline()
+        apply_wallpaper()
+
+
+def main() -> None:
+    command = sys.argv[1] if len(sys.argv) > 1 else "watch"
+
+    if command == "path":
+        print(wallpaper_path())
+        return
+
+    if command == "apply":
+        if apply_wallpaper() and swaybg_pid is not None:
+            os.waitpid(swaybg_pid, 0)
+        return
+
+    if command == "watch":
+        watch()
+        return
+
+    print(f"usage: {sys.argv[0]} [watch|apply|path]", file=sys.stderr)
+    sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()

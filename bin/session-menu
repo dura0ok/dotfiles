@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-choice="$(
-  printf '%s\n' \
-    'Lock' \
-    'Logout' \
-    'Reboot' \
-    'Shutdown' \
-    'Cancel' \
-  | fuzzel --dmenu --prompt 'Session: ' --lines 5
-)"
+choice=$(
+  printf '%s\n' Lock Logout Reboot Shutdown Cancel \
+    | fuzzel --dmenu --prompt 'Session: ' --lines 5
+) || exit 0
 
-case "$choice" in
-  Lock)     exec swaylock -f ;;
-  Logout)   exec niri msg action quit ;;
-  Reboot)   exec systemctl reboot ;;
-  Shutdown) exec systemctl poweroff ;;
-  *)        exit 0 ;;
+case $choice in
+  Lock)
+    exec swaylock -f
+    ;;
+  Logout)
+    [[ -n ${NIRI_SOCKET:-} ]] && exec niri msg action quit
+    command -v cinnamon-session-quit >/dev/null && exec cinnamon-session-quit --logout --no-prompt
+    command -v gnome-session-quit >/dev/null && exec gnome-session-quit --logout --no-prompt
+    exec loginctl terminate-session "${XDG_SESSION_ID:-}"
+    ;;
+  Reboot)
+    exec systemctl reboot
+    ;;
+  Shutdown)
+    exec systemctl poweroff
+    ;;
 esac

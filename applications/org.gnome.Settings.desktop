@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Settings
+Name[ru]=Настройки
+Icon=org.gnome.Settings
+Exec=gnome-settings
+DBusActivatable=false
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Settings;
+Keywords=Preferences;Settings;

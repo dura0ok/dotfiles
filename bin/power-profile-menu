@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bus=org.freedesktop.UPower.PowerProfiles
+object=/org/freedesktop/UPower/PowerProfiles
+
+current=$(
+  busctl get-property "$bus" "$object" "$bus" ActiveProfile \
+    | awk '{print $2}' \
+    | tr -d '"'
+)
+
+mark() {
+  local profile=$1 label=$2
+  if [[ $profile == "$current" ]]; then
+    echo "* $label"
+  else
+    echo "  $label"
+  fi
+}
+
+choice=$(
+  {
+    mark power-saver Save
+    mark balanced Bal
+    mark performance Perf
+  } | fuzzel --dmenu --prompt 'Power: ' --lines 3 --width 18
+) || exit 0
+
+label=${choice#\* }
+label=${label#  }
+
+case $label in
+  Save) profile=power-saver ;;
+  Bal)  profile=balanced ;;
+  Perf) profile=performance ;;
+  *)    exit 0 ;;
+esac
+
+[[ $profile != "$current" ]] || exit 0
+
+busctl set-property "$bus" "$object" "$bus" ActiveProfile s "$profile"
+notify-send -t 2000 -a power Power "$label"
