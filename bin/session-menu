@@ -8,7 +8,7 @@ choice=$(
 
 case $choice in
   Lock)
-    exec swaylock -f
+    exec niri-lock
     ;;
   Logout)
     [[ -n ${NIRI_SOCKET:-} ]] && exec niri msg action quit

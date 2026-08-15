@@ -6,9 +6,12 @@ binds {
     Mod+B hotkey-overlay-title="Browser: Firefox" { spawn "firefox"; }
     Mod+Shift+B hotkey-overlay-title="Browser: Chrome" { spawn "google-chrome"; }
     Mod+E hotkey-overlay-title="Files: Nautilus" { spawn "nautilus"; }
-    Super+L hotkey-overlay-title="Lock: swaylock" { spawn "swaylock" "-f"; }
-    Super+Alt+W hotkey-overlay-title="Restart: waybar" {
-        spawn-sh "pkill waybar; exec waybar"
+    Super+L hotkey-overlay-title="Lock: niri-lock" { spawn "niri-lock"; }
+    Super+Alt+W hotkey-overlay-title="Restart: ashell" {
+        spawn-sh "pkill ashell; exec ashell"
+    }
+    Super+Alt+N hotkey-overlay-title="Notifications: swaync panel" {
+        spawn-sh "swaync-client -t -sw"
     }
 
     Super+N hotkey-overlay-title="Workspaces: presets / named" {
@@ -18,23 +21,23 @@ binds {
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
     XF86AudioRaiseVolume allow-when-locked=true {
-        spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0 && canberra-gtk-play -i audio-volume-change"
+        spawn-sh "ashell msg volume-up && canberra-gtk-play -i audio-volume-change"
     }
     XF86AudioLowerVolume allow-when-locked=true {
-        spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1- && canberra-gtk-play -i audio-volume-change"
+        spawn-sh "ashell msg volume-down && canberra-gtk-play -i audio-volume-change"
     }
     XF86AudioMute allow-when-locked=true {
-        spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && canberra-gtk-play -i audio-volume-change"
+        spawn-sh "ashell msg volume-toggle-mute && canberra-gtk-play -i audio-volume-change"
     }
-    XF86AudioMicMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioMicMute allow-when-locked=true { spawn-sh "ashell msg microphone-toggle-mute"; }
 
     XF86AudioPlay allow-when-locked=true { spawn-sh "playerctl play-pause"; }
     XF86AudioStop allow-when-locked=true { spawn-sh "playerctl stop"; }
     XF86AudioPrev allow-when-locked=true { spawn-sh "playerctl previous"; }
     XF86AudioNext allow-when-locked=true { spawn-sh "playerctl next"; }
 
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "ashell msg brightness-up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "ashell msg brightness-down"; }
 
     Mod+O repeat=false { toggle-overview; }
     Mod+Q repeat=false { close-window; }

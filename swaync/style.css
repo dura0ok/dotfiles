@@ -1,0 +1,36 @@
+/* niri notification palette */
+:root {
+  --cc-bg: rgba(26, 29, 35, 0.94);
+  --noti-border-color: #7eb8da;
+  --noti-bg: 26, 29, 35;
+  --noti-bg-alpha: 0.93;
+  --noti-bg-darker: rgb(20, 22, 27);
+  --noti-bg-hover: rgb(42, 48, 58);
+  --noti-bg-focus: rgba(58, 66, 78, 0.7);
+  --noti-close-bg: rgb(58, 63, 71);
+  --noti-close-bg-hover: rgb(78, 86, 98);
+  --text-color: #e8eaed;
+  --text-color-disabled: rgb(150, 154, 160);
+  --bg-selected: #7eb8da;
+  --notification-icon-size: 48px;
+  --border: 2px solid var(--noti-border-color);
+  --border-radius: 10px;
+  --font-size-body: 14px;
+  --font-size-summary: 15px;
+}
+
+@define-color cc-bg rgba(26, 29, 35, 0.94);
+@define-color noti-border-color #7eb8da;
+@define-color noti-bg rgba(26, 29, 35, 0.93);
+@define-color noti-bg-opaque rgb(26, 29, 35);
+@define-color noti-bg-darker rgb(20, 22, 27);
+@define-color noti-bg-hover rgb(42, 48, 58);
+@define-color noti-bg-hover-opaque rgb(42, 48, 58);
+@define-color noti-bg-focus rgba(58, 66, 78, 0.7);
+@define-color text-color #e8eaed;
+@define-color text-color-disabled rgb(150, 154, 160);
+@define-color bg-selected #7eb8da;
+
+.notification-row .notification-background .notification.critical {
+  border: 2px solid #e07a5f;
+}
