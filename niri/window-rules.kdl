@@ -3,6 +3,13 @@ window-rule {
     open-floating true
 }
 
+// Portable Telegram uses app-id like org.telegram.desktop._<hash>
+window-rule {
+    match app-id=r#"^org\.telegram\.desktop"# title="^Media viewer$"
+    open-floating true
+    open-fullscreen false
+}
+
 window-rule {
     geometry-corner-radius 10
     clip-to-geometry true

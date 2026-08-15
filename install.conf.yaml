@@ -75,11 +75,11 @@
 - omnipkg:
     - install:
         - { dnf: niri }
-        - { dnf: waybar }
-        - mako
+        - { dnf: SwayNotificationCenter, apt: sway-notification-center, pac: swaync }
         - fuzzel
         - swaybg
         - swaylock
+        - { dnf: gtklock }
         - grim
         - slurp
         - wl-clipboard
@@ -170,24 +170,28 @@
       path: niri/ws-presets.kdl
       create: true
       backup: true
-    ~/.config/waybar/config.jsonc:
-      path: waybar/config.jsonc
+    ~/.config/ashell/config.toml:
+      path: ashell/config.toml
       create: true
       backup: true
-    ~/.config/waybar/config:
-      path: waybar/config.jsonc
+    ~/.config/swaync/config.json:
+      path: swaync/config.json
       create: true
       backup: true
-    ~/.config/waybar/style.css:
-      path: waybar/style.css
-      create: true
-      backup: true
-    ~/.config/mako/config:
-      path: mako/config
+    ~/.config/swaync/style.css:
+      path: swaync/style.css
       create: true
       backup: true
     ~/.config/fuzzel/fuzzel.ini:
       path: fuzzel/fuzzel.ini
+      create: true
+      backup: true
+    ~/.config/gtklock/config.ini:
+      path: gtklock/config.ini
+      create: true
+      backup: true
+    ~/.config/gtklock/style.css:
+      path: gtklock/style.css
       create: true
       backup: true
     ~/.local/bin/niri-focus:
@@ -208,6 +212,10 @@
       backup: true
     ~/.local/bin/session-menu:
       path: bin/session-menu
+      create: true
+      backup: true
+    ~/.local/bin/niri-lock:
+      path: bin/niri-lock
       create: true
       backup: true
     ~/.local/bin/audio-settings:
@@ -240,4 +248,6 @@
     - command: bash scripts/install-unp-linux.sh
     - command: bash scripts/install-lnav.sh
     - command: bash scripts/install-niri-desktop.sh
+    - command: systemctl --user enable --now swaync.service
+    - command: bash scripts/install-ashell.sh
     - command: bash scripts/chsh-zsh-if-needed.sh

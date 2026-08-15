@@ -46,7 +46,7 @@ preset_body() {
 }
 
 preset_cwd() {
-  local name=$1 line val
+  local name=$1 line
   while IFS= read -r line; do
     if [[ $line =~ ^[[:space:]]*cwd[[:space:]]+\"([^\"]+)\" ]]; then
       expand_path "${BASH_REMATCH[1]}"
@@ -54,6 +54,17 @@ preset_cwd() {
     fi
   done < <(preset_body "$name")
   return 1
+}
+
+preset_layout() {
+  local name=$1 line
+  while IFS= read -r line; do
+    if [[ $line =~ ^[[:space:]]*layout[[:space:]]+\"([^\"]+)\" ]]; then
+      printf '%s\n' "${BASH_REMATCH[1]}"
+      return 0
+    fi
+  done < <(preset_body "$name")
+  printf 'default\n'
 }
 
 # Print spawn lines as NUL-separated argv arrays encoded: cmd\targ\targ\n
@@ -72,16 +83,26 @@ preset_spawns() {
     done
     ((${#args[@]} > 0)) || continue
 
-    # If only the command given and cwd set — sensible defaults
-    if ((${#args[@]} == 1)) && [[ -n $cwd ]]; then
+    if [[ -n $cwd ]]; then
       case ${args[0]} in
         ghostty|kitty|alacritty|wezterm|foot)
-          args+=("--working-directory=$cwd")
+          local has_wd=0 a
+          for a in "${args[@]}"; do
+            [[ $a == --working-directory=* || $a == -d ]] && has_wd=1
+          done
+          ((has_wd)) || args+=("--working-directory=$cwd")
           ;;
-        code|code-insiders|cursor|codium|emacs|nvim|vim|helix|zed)
-          args+=("$cwd")
+        code|code-insiders|cursor|codium)
+          # folder path usually last; add if none looks like a path
+          local has_path=0 a
+          for a in "${args[@]:1}"; do
+            [[ $a == -* ]] && continue
+            has_path=1
+          done
+          ((has_path)) || args+=("$cwd")
           ;;
-        *)
+        emacs|nvim|vim|helix|zed)
+          ((${#args[@]} == 1)) && args+=("$cwd")
           ;;
       esac
     fi
@@ -140,14 +161,89 @@ ensure_named_workspace() {
   niri msg action focus-workspace "$name"
 }
 
+workspace_id_by_name() {
+  local name=$1
+  workspaces_json | jq -r --arg n "$name" '.[] | select(.name == $n) | .id' | head -n1
+}
+
+# Wait until $count tiling windows exist on workspace id $1 (timeout ~seconds)
+wait_workspace_windows() {
+  local ws_id=$1 need=${2:-2} tries=${3:-40} n
+  while ((tries-- > 0)); do
+    n=$(niri msg --json windows | jq -r --argjson id "$ws_id" '
+      [.[] | select(.workspace_id == $id and (.is_floating | not))] | length
+    ')
+    ((n >= need)) && return 0
+    sleep 0.25
+  done
+  return 1
+}
+
+# Side-by-side: editor left, terminal right, each ~50%.
+arrange_split() {
+  local ws_name=$1
+  local ws_id left right
+
+  ws_id=$(workspace_id_by_name "$ws_name")
+  [[ -n ${ws_id:-} ]] || return 1
+  wait_workspace_windows "$ws_id" 2 48 || true
+
+  # Unstack until every column has a single window
+  local guard=8 stacked
+  while ((guard-- > 0)); do
+    stacked=$(niri msg --json windows | jq -r --argjson id "$ws_id" '
+      [.[] | select(.workspace_id == $id and (.is_floating | not))
+        | .layout.pos_in_scrolling_layout[0]]
+      | group_by(.) | map(select(length > 1)) | length
+    ')
+    ((stacked > 0)) || break
+    niri msg action focus-workspace "$ws_name"
+    niri msg action expel-window-from-column || true
+    sleep 0.05
+  done
+
+  read -r left right < <(niri msg --json windows | jq -r --argjson id "$ws_id" '
+    def score:
+      (.app_id // "") as $a |
+      if ($a | test("(?i)code|cursor|codium|emacs|zed")) then 0
+      elif ($a | test("(?i)ghostty|kitty|alacritty|wezterm|foot|terminal")) then 2
+      else 1 end;
+    [.[] | select(.workspace_id == $id and (.is_floating | not))]
+    | sort_by(score, .id)
+    | "\(.[0].id // "") \(.[1].id // "")"
+  ')
+
+  [[ -n ${left:-} && -n ${right:-} && $left != "$right" ]] || return 1
+
+  niri msg action focus-window --id "$left"
+  niri msg action move-column-to-index 1
+  niri msg action set-column-width "50%"
+
+  niri msg action focus-window --id "$right"
+  niri msg action move-column-to-index 2
+  niri msg action set-column-width "50%"
+
+  niri msg action focus-window --id "$left"
+}
+
 launch_preset_apps() {
-  local name=$1 line
-  local -a args
+  local name=$1 layout=${2:-default} line
+  local -a args lines=()
   while IFS= read -r line; do
     [[ -n $line ]] || continue
+    lines+=("$line")
+  done < <(preset_spawns "$name")
+
+  local i=0
+  for line in "${lines[@]}"; do
+    # For split: pause after the first app so columns form side-by-side.
+    if [[ $layout == split && $i -eq 1 ]]; then
+      sleep 0.6
+    fi
     IFS=$'\t' read -r -a args <<<"$line"
     "${args[@]}" &
-  done < <(preset_spawns "$name")
+    ((++i))
+  done
 }
 
 preset_is_open() {
@@ -167,11 +263,15 @@ preset_is_open() {
 }
 
 create_from_preset() {
-  local name=$1
+  local name=$1 layout
+  layout=$(preset_layout "$name")
   if preset_is_open "$name"; then
     # already running — just focus, don't spawn again
     if workspaces_json | jq -e --arg n "$name" 'any(.name == $n)' >/dev/null; then
       niri msg action focus-workspace "$name"
+      if [[ $layout == split ]]; then
+        arrange_split "$name" || true
+      fi
     else
       local cwd wid
       cwd=$(preset_cwd "$name")
@@ -188,7 +288,10 @@ create_from_preset() {
   fi
   ensure_named_workspace "$name"
   sleep 0.05
-  launch_preset_apps "$name"
+  launch_preset_apps "$name" "$layout"
+  if [[ $layout == split ]]; then
+    arrange_split "$name" || true
+  fi
   notify "Preset «$name»"
 }
 
@@ -235,7 +338,7 @@ delete_workspace_by_name() {
     fi
     close_windows_on_workspace "$ws_id"
     if workspaces_json | jq -e --arg n "$name" 'any(.name == $n)' >/dev/null; then
-      niri msg action unset-workspace-name
+      niri msg action unset-workspace-name "$name"
     fi
   fi
   unpersist_workspace "$name"
@@ -251,6 +354,72 @@ delete_workspace_by_name() {
   fi
 
   notify "Deleted «$name»"
+}
+
+# Lines like: "1  pg_probackup3" or "2  (unnamed)" — stdout is idx\told_name_or_empty
+list_workspace_picks() {
+  workspaces_json | jq -r '
+    sort_by(.idx)[] |
+    (if .name != null then .name
+     elif .active_window_id != null then "(unnamed)"
+     else "(empty)" end) as $label
+    | "\(.idx)  \($label)"
+  '
+}
+
+pick_workspace_line() {
+  local prompt=$1 line
+  line=$(list_workspace_picks | "${FUZZEL[@]}" --prompt "$prompt" || true)
+  [[ -n ${line:-} ]] || return 1
+  printf '%s\n' "$line"
+}
+
+# From "1  name" → idx + optional real name (empty if unnamed/empty)
+parse_workspace_pick() {
+  local line=$1
+  local idx label
+  idx=$(printf '%s\n' "$line" | awk '{print $1}')
+  label=$(printf '%s\n' "$line" | sed -E 's/^[0-9]+[[:space:]]+//')
+  [[ $idx =~ ^[0-9]+$ ]] || return 1
+  printf '%s\n' "$idx"
+  if [[ $label == '(unnamed)' || $label == '(empty)' ]]; then
+    printf '\n'
+  else
+    printf '%s\n' "$label"
+  fi
+}
+
+list_named_picks() {
+  {
+    list_presets | while IFS= read -r p; do
+      [[ -n $p ]] || continue
+      preset_is_open "$p" && echo "$p"
+    done
+    workspaces_json | jq -r '.[] | select(.name != null) | .name'
+  } | awk 'NF && !seen[$0]++'
+}
+
+clear_workspace_name() {
+  local name=$1
+  niri msg action unset-workspace-name "$name"
+  unpersist_workspace "$name"
+  notify "Cleared «$name»"
+}
+
+rename_workspace() {
+  local idx=$1 old_name=$2 new_name=$3
+  if [[ -n $old_name ]]; then
+    niri msg action set-workspace-name --workspace "$old_name" "$new_name"
+    unpersist_workspace "$old_name"
+  else
+    niri msg action set-workspace-name --workspace "$idx" "$new_name"
+  fi
+  persist_workspace "$new_name"
+  if [[ -n $old_name ]]; then
+    notify "Renamed «$old_name» → «$new_name»"
+  else
+    notify "Named $idx → «$new_name»"
+  fi
 }
 
 build_menu() {
@@ -276,6 +445,8 @@ build_menu() {
           "\($m) \(.idx)  (empty)"
         end
     '
+    echo "✎ Rename…"
+    echo "○ Clear name…"
     echo "× Delete…"
   }
 }
@@ -306,16 +477,30 @@ case $choice in
     persist_workspace "$name"
     notify "Created «$name»"
     ;;
+  '✎ Rename…')
+    line=$(pick_workspace_line "Rename › ") || exit 0
+    {
+      read -r idx
+      read -r old_name
+    } < <(parse_workspace_pick "$line") || exit 1
+    new_name=$(prompt_name "New name:") || exit 0
+    if [[ -n $old_name && $old_name == "$new_name" ]]; then
+      notify "Same name"
+      exit 0
+    fi
+    if workspaces_json | jq -e --arg n "$new_name" 'any(.name == $n)' >/dev/null; then
+      notify "«$new_name» already exists"
+      exit 1
+    fi
+    rename_workspace "$idx" "$old_name" "$new_name"
+    ;;
+  '○ Clear name…')
+    named=$(list_named_picks | "${FUZZEL[@]}" --prompt "Clear name › " || true)
+    [[ -n ${named:-} ]] || exit 0
+    clear_workspace_name "$named"
+    ;;
   '× Delete…')
-    named=$(
-      {
-        list_presets | while IFS= read -r p; do
-          [[ -n $p ]] || continue
-          preset_is_open "$p" && echo "$p"
-        done
-        workspaces_json | jq -r '.[] | select(.name != null) | .name'
-      } | awk 'NF && !seen[$0]++' | "${FUZZEL[@]}" --prompt "Delete › " || true
-    )
+    named=$(list_named_picks | "${FUZZEL[@]}" --prompt "Delete › " || true)
     [[ -n ${named:-} ]] || exit 0
     delete_workspace_by_name "$named"
     ;;
