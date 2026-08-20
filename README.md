@@ -1,4 +1,4 @@
-# dotfiles
+# My dotfiles
 
 Bootstrap via [Dotbot](https://github.com/anishathalye/dotbot):
 
