@@ -1,4 +1,4 @@
-# dotfiles
+# My dotfiles
 
 Bootstrap via [Dotbot](https://github.com/anishathalye/dotbot):
 
@@ -9,3 +9,5 @@ cd ~/.dotfiles
 ```
 
 `./install --skip-apps` — только симлинки, без установщиков приложений.
+
+`./install --niri` — дополнительно niri desktop (пакеты, конфиги, helpers).

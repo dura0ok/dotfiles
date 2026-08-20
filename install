@@ -2,18 +2,22 @@
 set -e
 
 CONFIG="install.conf.yaml"
+NIRI_CONFIG="install-niri.conf.yaml"
 DOTBOT_DIR="dotbot"
 DOTBOT_BIN="bin/dotbot"
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+WITH_NIRI=0
 DOTBOT_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
+    --niri) WITH_NIRI=1 ;;
     --skip-apps) export DOTFILES_SKIP_APPS=1 ;;
     -h|--help)
       echo "Usage: $0 [options] [dotbot args…]"
       echo
       echo "Options (this script):"
+      echo "  --niri         also install niri desktop (packages, links, helpers)"
       echo "  --skip-apps    skip Ghostty, Sublime, VS Code, niri desktop helpers"
       echo
       echo "Anything else is passed to dotbot (e.g. -v, -vv, -n, --only link)."
@@ -34,4 +38,9 @@ else
 fi
 
 OMNIPKG_PLUGIN="${BASEDIR}/dotbot-plugins/dotbot-omnipkg/omnipkg.py"
-exec "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" -p "${OMNIPKG_PLUGIN}" "${DOTBOT_ARGS[@]}"
+DOTBOT=("${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -p "${OMNIPKG_PLUGIN}")
+
+"${DOTBOT[@]}" -c "${CONFIG}" "${DOTBOT_ARGS[@]}"
+if [[ $WITH_NIRI == 1 ]]; then
+  "${DOTBOT[@]}" -c "${NIRI_CONFIG}" "${DOTBOT_ARGS[@]}"
+fi
