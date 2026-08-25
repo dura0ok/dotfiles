@@ -115,8 +115,13 @@
       path: tmux/tmux.conf.local
       create: true
       backup: true
+    ~/.local/bin/ssh-import-keys:
+      path: bin/ssh-import-keys
+      create: true
+      backup: true
 
 - shell:
+    - command: bash scripts/install-ssh-agent.sh
     - command: bash scripts/install-tmux-tpm.sh
     - command: bash scripts/install-ghostty.sh
     - command: bash scripts/install-sublime-text.sh
