@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-niri-focus com.saivert.pwvucontrol 2>/dev/null || true
-exec flatpak run com.saivert.pwvucontrol -t 4

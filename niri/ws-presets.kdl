@@ -1,6 +1,0 @@
-preset "pg_probackup3" {
-    cwd "~/wrk/pg_probackup3"
-    layout "split"
-    spawn "code" "-n"
-    spawn "ghostty"
-}

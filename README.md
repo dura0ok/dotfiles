@@ -9,5 +9,3 @@ cd ~/.dotfiles
 ```
 
 `./install --skip-apps` — только симлинки, без установщиков приложений.
-
-`./install --niri` — дополнительно niri desktop (пакеты, конфиги, helpers).

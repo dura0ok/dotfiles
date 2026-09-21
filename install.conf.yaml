@@ -34,7 +34,7 @@
         - tldr
         - pv
         - ipcalc
-        - { pac: redshift, apt: redshift, dnf: redshift }
+        - { pac: gammastep, apt: gammastep, dnf: gammastep }
 
 - omnipkg:
     - install:
@@ -120,8 +120,8 @@
       path: bin/ssh-import-keys
       create: true
       backup: true
-    ~/.config/redshift.conf:
-      path: redshift/redshift.conf
+    ~/.config/gammastep/config.ini:
+      path: gammastep/config.ini
       create: true
       backup: true
 
@@ -143,4 +143,4 @@
     - command: bash scripts/install-unp-linux.sh
     - command: bash scripts/install-lnav.sh
     - command: bash scripts/chsh-zsh-if-needed.sh
-    - command: bash scripts/enable-redshift.sh
+    - command: bash scripts/enable-gammastep.sh
