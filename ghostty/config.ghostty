@@ -2,3 +2,8 @@ theme = dark:catppuccin-frappe.conf,light:catppuccin-latte.conf
 
 keybind = alt+shift+==increase_font_size:1
 keybind = alt+shift+-=decrease_font_size:1
+
+keybind = ctrl+shift+key_v=paste_from_clipboard
+keybind = ctrl+shift+key_c=copy_to_clipboard:mixed
+keybind = ctrl+shift+м=paste_from_clipboard
+keybind = ctrl+shift+с=copy_to_clipboard:mixed
